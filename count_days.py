@@ -1,11 +1,16 @@
 import re
 import pyperclip
 
+# Develop a regex to look for dates in the form YYYY-MM-DD
 dateRegex = re.compile(r'\d\d\d\d-\d\d-\d\d')
+
+# Load the input from the clipboard
 clipboard = pyperclip.paste()
 
+# Search for all YYYY-MM-DD's
 days_list = dateRegex.findall(clipboard)
 
+# Output the results the console and search for duplicates
 print (days_list)
 print ('Number of days', len(days_list))
 
