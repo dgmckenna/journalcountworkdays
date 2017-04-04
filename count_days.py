@@ -2,7 +2,7 @@ import re
 import pyperclip
 
 # Develop a regex to look for dates in the form YYYY-MM-DD
-dateRegex = re.compile(r'\d\d\d\d-\d\d-\d\d')
+dateRegex = re.compile(r'{\d\d\d\d-\d\d-\d\d.*}')
 
 # Load the input from the clipboard
 clipboard = pyperclip.paste()
