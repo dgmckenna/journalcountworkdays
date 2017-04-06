@@ -10,11 +10,13 @@ clipboard = pyperclip.paste()
 # Search for all YYYY-MM-DD's
 regex_days_list = dateRegex.findall(clipboard)
 
-# Output the results the console and search for duplicates
+# Output to the console the number of journal entries found
+# helps the user identify if they don't have the right stuff
+# in the clipboard or not
 print (regex_days_list)
-print ('Number of days', len(regex_days_list))
+print ('Number of Journal Entries: ', len(regex_days_list))
 
-csv_output_list = []
+wide_output_list = []
 master_tag_list = []
 
 # For each item where we found the regex of the form {YYYY-MM-DD, tag1, tag2}
@@ -23,12 +25,12 @@ for item in regex_days_list:
     s_item = item[1:-1]
     item_list_tmp = s_item.split(',')
 
-    # Perform cleanup on the item list to remove any leading or ending spaces
+    # Perform cleanup on the tags found to remove any leading or ending spaces
     for tag in item_list_tmp[1:]:
         s_tag = tag.strip()
 
         # Add the tag to the master tag list, this is used to build the
-        # wide format necessary for CSV and pivot table viewing where
+        # wide format necessary for pivot table viewing where
         # each tag is it's own column and you can "count" on instances
         # of that column
         if s_tag not in master_tag_list:
@@ -40,24 +42,25 @@ for item in regex_days_list:
 header_non_tags = ['Date']        
 header_row = header_non_tags + master_tag_list
 output_string = '\t'.join(header_row)
-csv_output_list.append(header_row)
+wide_output_list.append(header_row)
 
 for item in regex_days_list:
     s_item = item[1:-1]
     item_list_tmp = s_item.split(',')
     
-    csv_row = [[]] * len(header_row)
+    wide_row = [[]] * len(header_row)
     
-# Perform cleanup on the item list to remove any leading or ending spaces
+    # Perform cleanup on the item list to remove any leading or ending spaces
     date_col_val = item_list_tmp[0]
-    csv_row[0] = date_col_val
+    wide_row[0] = date_col_val
     for tag in item_list_tmp[1:]:
         s_tag = tag.strip()
-        csv_row[master_tag_list.index(s_tag) + len(header_non_tags)] = 1
-    csv_output_list.append(csv_row)
-    output_string = output_string + '\n' + '\t'.join(str(x) for x in csv_row)
+        wide_row[master_tag_list.index(s_tag) + len(header_non_tags)] = 1
+    wide_output_list.append(wide_row)
+    output_string = output_string + '\n' + '\t'.join(str(x) for x in wide_row)
 
-
+# Put the tab separated, newline separated data into the clipboard for pasting
+# into excel or other spreadsheet software
 pyperclip.copy(output_string)
     
         
